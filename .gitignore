@@ -1,0 +1,74 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Turbo
+.turbo/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test & coverage
+coverage/
+.nyc_output/
+
+# Caches
+.cache/
+.eslintcache
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+*.sublime-project
+*.sublime-workspace
+
+# Cursor (local state; keep rules if you add them under .cursor/rules/)
+.cursor/projects/
+.cursor/*.db
+.cursor/*.db-*
+
+# TypeScript emit in package src (accidental local builds)
+packages/**/src/**/*.js
+packages/**/src/**/*.js.map
+packages/**/src/**/*.d.ts
+packages/**/src/**/*.d.ts.map
+!packages/**/src/**/*.config.js
+
+# Vite
+apps/web/dist/
+
+# NestJS
+apps/api/dist/
+
+# Prisma (legacy generated client, if present)
+node_modules/.prisma/
+
+# Docker local overrides
+docker-compose.override.yml
+
+# Optional local uploads / temp (S3 POC)
+uploads/
+tmp/
