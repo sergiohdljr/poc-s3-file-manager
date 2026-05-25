@@ -21,7 +21,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   const config = new DocumentBuilder()
-    .setTitle('my-app API')
+    .setTitle('S3 File Manager API')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
