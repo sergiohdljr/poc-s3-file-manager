@@ -7,7 +7,7 @@ import { UserMapper } from '../../application/mappers/user.mapper';
 
 interface UserRow {
   id: string;
-  name: string;
+  nome: string;
   email: string;
   password_hash: string;
 }
@@ -18,7 +18,7 @@ export class SqlUserRepository implements UserRepository {
 
   async findById(id: string): Promise<User | null> {
     const { rows } = await this.pool.query<UserRow>(
-      `SELECT id, name, email, password_hash
+      `SELECT id, nome, email, password_hash
        FROM users WHERE id = $1`,
       [id],
     );
@@ -27,7 +27,7 @@ export class SqlUserRepository implements UserRepository {
 
   async findByEmail(email: string): Promise<User | null> {
     const { rows } = await this.pool.query<UserRow>(
-      `SELECT id, name, email, password_hash
+      `SELECT id, nome, email, password_hash
        FROM users WHERE email = $1`,
       [email],
     );
@@ -36,10 +36,10 @@ export class SqlUserRepository implements UserRepository {
 
   async save(user: User): Promise<void> {
     await this.pool.query(
-      `INSERT INTO users (id, name, email, password_hash)
+      `INSERT INTO users (id, nome, email, password_hash)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT (id) DO UPDATE SET
-         name = EXCLUDED.name,
+         nome = EXCLUDED.nome,
          email = EXCLUDED.email,
          password_hash = EXCLUDED.password_hash,
          updated_at = NOW()`,
@@ -54,7 +54,7 @@ export class SqlUserRepository implements UserRepository {
   private toMapperRow(row: UserRow) {
     return {
       id: row.id,
-      name: row.name,
+      name: row.nome,
       email: row.email,
       passwordHash: row.password_hash,
     };

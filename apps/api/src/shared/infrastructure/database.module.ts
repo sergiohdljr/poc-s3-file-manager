@@ -8,10 +8,13 @@ export const PG_POOL = Symbol('PG_POOL');
   providers: [
     {
       provide: PG_POOL,
-      useFactory: () =>
-        new Pool({
+      useFactory: () => {
+        const schema = process.env.PG_SCHEMA ?? 'File_Manager';
+        return new Pool({
           connectionString: process.env.DATABASE_URL,
-        }),
+          options: `-c search_path="${schema}",public`,
+        });
+      },
     },
   ],
   exports: [PG_POOL],
