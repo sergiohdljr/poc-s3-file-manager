@@ -72,3 +72,4 @@ docker-compose.override.yml
 # Optional local uploads / temp (S3 POC)
 uploads/
 tmp/
+.env
