@@ -1,9 +1,24 @@
 import { Global, Module } from '@nestjs/common';
-import { S3Client } from '@aws-sdk/client-s3';
+import { S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
 import { loadS3Config, S3Config } from './s3.config';
 
 export const S3_CLIENT = Symbol('S3_CLIENT');
 export const S3_CONFIG = Symbol('S3_CONFIG');
+
+function createS3Client(config: S3Config): S3Client {
+  const options: S3ClientConfig = { region: config.region };
+
+  if (config.credentials) {
+    options.credentials = config.credentials;
+  }
+
+  if (config.endpoint) {
+    options.endpoint = config.endpoint;
+    options.forcePathStyle = config.forcePathStyle ?? false;
+  }
+
+  return new S3Client(options);
+}
 
 @Global()
 @Module({
@@ -15,16 +30,7 @@ export const S3_CONFIG = Symbol('S3_CONFIG');
     {
       provide: S3_CLIENT,
       inject: [S3_CONFIG],
-      useFactory: (config: S3Config) =>
-        new S3Client({
-          region: config.region,
-          endpoint: config.endpoint,
-          forcePathStyle: config.forcePathStyle,
-          credentials: {
-            accessKeyId: config.accessKeyId,
-            secretAccessKey: config.secretAccessKey,
-          },
-        }),
+      useFactory: createS3Client,
     },
   ],
   exports: [S3_CLIENT, S3_CONFIG],
