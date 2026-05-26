@@ -2,7 +2,10 @@
   "name": "my-app",
   "private": true,
   "packageManager": "npm@10.9.2",
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -11,11 +14,16 @@
     "db:migrate": "turbo run db:migrate --filter=api"
   },
   "devDependencies": {
+    "@types/node": "^25.9.1",
+    "prettier": "^3.2.0",
     "turbo": "^2.0.0",
-    "typescript": "^5.4.0",
-    "prettier": "^3.2.0"
+    "typescript": "^5.4.0"
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@fastify/static": "^7.0.4",
+    "@nestjs/config": "^4.0.4"
   }
 }

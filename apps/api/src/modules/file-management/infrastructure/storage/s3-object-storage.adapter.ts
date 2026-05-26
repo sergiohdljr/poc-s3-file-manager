@@ -22,13 +22,16 @@ import {
   PutObjectInput,
   UploadPartInput,
 } from './object-storage.port';
+import { S3Key } from '../../domain/value-objects/s3-key.vo';
+import { POC_OWNER_ID } from '../../domain/constants/poc-owner';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class S3ObjectStorageAdapter implements ObjectStorage {
   constructor(
     @Inject(S3_CLIENT) private readonly client: S3Client,
     @Inject(S3_CONFIG) private readonly config: S3Config,
-  ) {}
+  ) { }
 
   async putObject(input: PutObjectInput): Promise<void> {
     await this.client.send(
@@ -94,11 +97,13 @@ export class S3ObjectStorageAdapter implements ObjectStorage {
   async createMultipartUpload(
     input: MultipartUploadInput,
   ): Promise<{ uploadId: string }> {
+    const s3Key = S3Key.create(POC_OWNER_ID, randomUUID(), input.filename);
     const response = await this.client.send(
       new CreateMultipartUploadCommand({
         Bucket: this.config.bucket,
-        Key: input.key,
+        Key: s3Key.getValue(),
         ContentType: input.contentType,
+
       }),
     );
 

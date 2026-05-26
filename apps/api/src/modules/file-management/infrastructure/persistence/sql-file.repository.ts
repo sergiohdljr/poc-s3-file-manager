@@ -1,37 +1,34 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Pool } from 'pg';
 import { PG_POOL } from '../../../../shared/infrastructure/database.module';
-import { StoredFile } from '../../domain/entities/stored-file.entity';
+import { InitiateStoredFileProps, StoredFile } from '../../domain/entities/stored-file.entity';
 import { FileRepository } from '../../domain/repositories/file.repository';
 import { FileMetadataMapper } from './file-metadata.mapper';
+import { randomUUID } from 'crypto';
+import { FileStatus } from '../../domain/enums/file-status.enum';
 
 @Injectable()
 export class SqlFileRepository implements FileRepository {
-  constructor(@Inject(PG_POOL) private readonly pool: Pool) {}
+  constructor(@Inject(PG_POOL) private readonly pool: Pool) { }
 
-  async save(file: StoredFile): Promise<void> {
+  async save(file: InitiateStoredFileProps): Promise<void> {
+    console.log('Saving file:', JSON.stringify(file, null, 2));
+
     await this.pool.query(
       `INSERT INTO file_metadata (
-         id, owner_id, folder_id, filename, mime_type, size,
-         status, s3_key, upload_id, created_at, updated_at
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-       ON CONFLICT (id) DO UPDATE SET
-         folder_id = EXCLUDED.folder_id,
-         status = EXCLUDED.status,
-         upload_id = EXCLUDED.upload_id,
-         updated_at = EXCLUDED.updated_at`,
+          owner_id, folder_id, filename, mime_type, size,
+         status, created_at, updated_at
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       `,
       [
-        file.id,
         file.ownerId,
         file.folderId,
         file.filename,
         file.mimeType,
         file.size,
-        file.status,
-        file.s3Key,
-        file.uploadId,
-        file.createdAt,
-        file.updatedAt,
+        FileStatus.PENDING,
+        new Date(),
+        new Date(),
       ],
     );
   }

@@ -27,7 +27,7 @@ export interface PresignedUploadPartInput {
 }
 
 export interface MultipartUploadInput {
-  key: string;
+  filename: string;
   contentType?: string;
 }
 
