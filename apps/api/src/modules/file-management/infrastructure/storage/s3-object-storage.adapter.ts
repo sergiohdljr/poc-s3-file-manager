@@ -18,6 +18,7 @@ import {
   MultipartUploadInput,
   ObjectStorage,
   PresignedDownloadInput,
+  PresignedUploadPartInput,
   PutObjectInput,
   UploadPartInput,
 } from './object-storage.port';
@@ -68,6 +69,21 @@ export class S3ObjectStorageAdapter implements ObjectStorage {
     const command = new GetObjectCommand({
       Bucket: this.config.bucket,
       Key: input.key,
+    });
+
+    return getSignedUrl(this.client, command, {
+      expiresIn: input.expiresInSeconds ?? 3600,
+    });
+  }
+
+  async getPresignedUploadPartUrl(
+    input: PresignedUploadPartInput,
+  ): Promise<string> {
+    const command = new UploadPartCommand({
+      Bucket: this.config.bucket,
+      Key: input.key,
+      UploadId: input.uploadId,
+      PartNumber: input.partNumber,
     });
 
     return getSignedUrl(this.client, command, {

@@ -19,6 +19,13 @@ export interface PresignedDownloadInput {
   expiresInSeconds?: number;
 }
 
+export interface PresignedUploadPartInput {
+  key: string;
+  uploadId: string;
+  partNumber: number;
+  expiresInSeconds?: number;
+}
+
 export interface MultipartUploadInput {
   key: string;
   contentType?: string;
@@ -42,6 +49,7 @@ export interface ObjectStorage {
   getObject(input: GetObjectInput): Promise<Uint8Array>;
   deleteObject(input: DeleteObjectInput): Promise<void>;
   getPresignedDownloadUrl(input: PresignedDownloadInput): Promise<string>;
+  getPresignedUploadPartUrl(input: PresignedUploadPartInput): Promise<string>;
   createMultipartUpload(input: MultipartUploadInput): Promise<{ uploadId: string }>;
   uploadPart(input: UploadPartInput): Promise<{ etag: string }>;
   completeMultipartUpload(input: CompleteMultipartUploadInput): Promise<void>;
