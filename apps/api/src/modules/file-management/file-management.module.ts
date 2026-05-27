@@ -5,12 +5,11 @@ import { persistenceProviders } from './infrastructure/persistence/persistence.p
 import { OBJECT_STORAGE } from './infrastructure/storage/object-storage.port';
 import { storageProviders } from './infrastructure/storage/storage.providers';
 import { UploadFileUseCase } from './application/use-cases/upload-file.usecase';
-import { S3ObjectStorageAdapter } from './infrastructure/storage/s3-object-storage.adapter';
-import { SqlFileRepository } from './infrastructure/persistence/sql-file.repository';
+import { CompleteUploadUseCase } from './application/use-cases/complete-upload-file.usecase';
 
 @Module({
   controllers: [FilesController],
-  providers: [...storageProviders, ...persistenceProviders, UploadFileUseCase],
+  providers: [...storageProviders, ...persistenceProviders, UploadFileUseCase, CompleteUploadUseCase],
   exports: [OBJECT_STORAGE, FILE_REPOSITORY],
 })
 export class FileManagementModule { }

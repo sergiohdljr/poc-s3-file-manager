@@ -4,7 +4,7 @@ import { useState } from "react";
 export function UsersPage() {
 
   const [file, setFile] = useState<File | null>()
-  const CHUNKSIZE = 2 * 1024 * 1024
+  const CHUNKSIZE = 5 * 1024 * 1024
 
   const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFile(e.target.files?.[0] ?? null);
@@ -28,7 +28,30 @@ export function UsersPage() {
       }
     )
 
-    console.log(data)
+    const { signedUrls, uploadId, key } = data
+
+
+    const parts = await Promise.all(
+      signedUrls.map(async (url, i) => {
+        const chunk = file.slice(i * CHUNKSIZE, (i + 1) + CHUNKSIZE)
+
+        const response = await axios.put(url, chunk)
+
+        const ETag = response?.headers?.get("ETag")
+        return { PartNumber: i + 1, ETag }
+      })
+    )
+
+
+    return await axios.post("http://localhost:3000/api/v1/files/upload/complete", {
+      key,
+      uploadId,
+      parts
+    })
+
+
+
+
 
   }
 

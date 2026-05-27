@@ -15,6 +15,7 @@ export interface InitiateStoredFileProps {
   size: number;
   folderId?: string | null;
   ownerId?: string;
+  external_upload_id: string
 }
 
 export interface StoredFileProps {
@@ -24,8 +25,7 @@ export interface StoredFileProps {
   mimeType: string;
   size: number;
   status: FileStatus;
-  s3Key: S3Key;
-  uploadId: string | null;
+  external_upload_id: string | null;
 }
 
 export class StoredFile extends BaseEntity {
@@ -35,8 +35,7 @@ export class StoredFile extends BaseEntity {
   private readonly _mimeType: string;
   private readonly _size: number;
   private _status: FileStatus;
-  private readonly _s3Key: S3Key;
-  private _uploadId: string | null;
+  private _external_upload_id: string | null;
 
   private constructor(props: StoredFileProps, id?: string, timestamps?: {
     createdAt: Date;
@@ -54,8 +53,7 @@ export class StoredFile extends BaseEntity {
     this._mimeType = props.mimeType;
     this._size = props.size;
     this._status = props.status;
-    this._s3Key = props.s3Key;
-    this._uploadId = props.uploadId;
+    this._external_upload_id = props.external_upload_id
   }
 
   static initiate(props: InitiateStoredFileProps): StoredFile {
@@ -72,8 +70,7 @@ export class StoredFile extends BaseEntity {
         mimeType: props.mimeType,
         size: props.size,
         status: FileStatus.PENDING,
-        s3Key: S3Key.create(ownerId, id, props.filename),
-        uploadId: null,
+        external_upload_id: props.external_upload_id
       },
       id,
     );
@@ -112,12 +109,8 @@ export class StoredFile extends BaseEntity {
     return this._status;
   }
 
-  get s3Key(): string {
-    return this._s3Key.getValue();
-  }
-
-  get uploadId(): string | null {
-    return this._uploadId;
+  get externalId(): string | null {
+    return this._external_upload_id;
   }
 
   startMultipartUpload(uploadId: string): void {
@@ -131,7 +124,7 @@ export class StoredFile extends BaseEntity {
       throw new Error('uploadId is required');
     }
 
-    this._uploadId = uploadId;
+    this._external_upload_id = uploadId;
     this._status = FileStatus.UPLOADING;
     this.touch();
   }
@@ -145,7 +138,7 @@ export class StoredFile extends BaseEntity {
     }
 
     this._status = FileStatus.COMPLETED;
-    this._uploadId = null;
+    this._external_upload_id = null;
     this.touch();
   }
 
@@ -158,7 +151,7 @@ export class StoredFile extends BaseEntity {
     }
 
     this._status = FileStatus.FAILED;
-    this._uploadId = null;
+    this._external_upload_id = null;
     this.touch();
   }
 

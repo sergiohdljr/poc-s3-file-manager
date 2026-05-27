@@ -11,7 +11,7 @@ export interface FileMetadataRow {
   size: string;
   status: string;
   s3_key: string;
-  upload_id: string | null;
+  external_upload_id: string | null;
   created_at: Date;
   updated_at: Date;
 }
@@ -26,8 +26,7 @@ export class FileMetadataMapper {
       mimeType: row.mime_type,
       size: Number(row.size),
       status: row.status as FileStatus,
-      s3Key: S3Key.reconstitute(row.s3_key),
-      uploadId: row.upload_id,
+      external_upload_id: row.external_upload_id,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
     });

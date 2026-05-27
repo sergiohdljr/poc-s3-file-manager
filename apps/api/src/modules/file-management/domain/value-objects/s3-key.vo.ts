@@ -5,9 +5,9 @@ export class S3Key extends ValueObject<string> {
     super(value);
   }
 
-  static create(ownerId: string, fileId: string, filename: string): S3Key {
+  static create(ownerId: string, filename: string): S3Key {
     const safeName = S3Key.sanitizeFilename(filename);
-    return new S3Key(`${ownerId}/${fileId}/${safeName}`);
+    return new S3Key(`${ownerId}/${safeName}`);
   }
 
   static reconstitute(key: string): S3Key {

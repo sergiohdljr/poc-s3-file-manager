@@ -41,7 +41,7 @@ export interface UploadPartInput {
 export interface CompleteMultipartUploadInput {
   key: string;
   uploadId: string;
-  parts: { partNumber: number; etag: string }[];
+  parts: { PartNumber: number; ETag: string }[];
 }
 
 export interface ObjectStorage {

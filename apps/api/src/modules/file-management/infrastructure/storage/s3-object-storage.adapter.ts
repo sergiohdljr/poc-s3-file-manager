@@ -97,13 +97,12 @@ export class S3ObjectStorageAdapter implements ObjectStorage {
   async createMultipartUpload(
     input: MultipartUploadInput,
   ): Promise<{ uploadId: string, key: string }> {
-    const s3Key = S3Key.create(POC_OWNER_ID, randomUUID(), input.filename);
+    const s3Key = S3Key.create(POC_OWNER_ID, input.filename);
     const response = await this.client.send(
       new CreateMultipartUploadCommand({
         Bucket: this.config.bucket,
         Key: s3Key.getValue(),
         ContentType: input.contentType,
-
       }),
     );
 
@@ -135,16 +134,14 @@ export class S3ObjectStorageAdapter implements ObjectStorage {
   async completeMultipartUpload(
     input: CompleteMultipartUploadInput,
   ): Promise<void> {
+
     await this.client.send(
       new CompleteMultipartUploadCommand({
         Bucket: this.config.bucket,
         Key: input.key,
         UploadId: input.uploadId,
         MultipartUpload: {
-          Parts: input.parts.map((p) => ({
-            PartNumber: p.partNumber,
-            ETag: p.etag,
-          })),
+          Parts: input.parts
         },
       }),
     );
