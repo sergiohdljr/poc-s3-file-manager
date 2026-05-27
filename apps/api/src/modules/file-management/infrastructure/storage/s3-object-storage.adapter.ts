@@ -96,7 +96,7 @@ export class S3ObjectStorageAdapter implements ObjectStorage {
 
   async createMultipartUpload(
     input: MultipartUploadInput,
-  ): Promise<{ uploadId: string }> {
+  ): Promise<{ uploadId: string, key: string }> {
     const s3Key = S3Key.create(POC_OWNER_ID, randomUUID(), input.filename);
     const response = await this.client.send(
       new CreateMultipartUploadCommand({
@@ -111,7 +111,7 @@ export class S3ObjectStorageAdapter implements ObjectStorage {
       throw new Error('S3 did not return an upload ID');
     }
 
-    return { uploadId: response.UploadId };
+    return { uploadId: response.UploadId, key: s3Key.getValue() };
   }
 
   async uploadPart(input: UploadPartInput): Promise<{ etag: string }> {

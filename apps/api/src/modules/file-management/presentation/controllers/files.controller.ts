@@ -9,7 +9,7 @@ export class FilesController {
     ) { }
 
     @Post('upload')
-    async uploadFile(@Body() body: InitiateStoredFileProps): Promise<string> {
+    async uploadFile(@Body() body: InitiateStoredFileProps): Promise<string[]> {
         return await this.uploadFileUseCase.execute(body);
     }
 }

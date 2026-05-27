@@ -4,6 +4,7 @@ import { useState } from "react";
 export function UsersPage() {
 
   const [file, setFile] = useState<File | null>()
+  const CHUNKSIZE = 2 * 1024 * 1024
 
   const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFile(e.target.files?.[0] ?? null);
@@ -17,7 +18,7 @@ export function UsersPage() {
     const { size, type, name } = file
 
 
-    const { data: uploadId } = await axios.post("http://localhost:3000/api/v1/files/upload",
+    const { data } = await axios.post("http://localhost:3000/api/v1/files/upload",
       {
         filename: name,
         mimeType: type,
@@ -27,7 +28,8 @@ export function UsersPage() {
       }
     )
 
-    console.log(uploadId)
+    console.log(data)
+
   }
 
   return (

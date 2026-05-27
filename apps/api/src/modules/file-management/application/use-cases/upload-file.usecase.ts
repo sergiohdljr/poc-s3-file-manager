@@ -13,16 +13,28 @@ export class UploadFileUseCase {
         @Inject(FILE_REPOSITORY) private readonly fileRepository: SqlFileRepository,
     ) { }
 
-    async execute(input: InitiateStoredFileProps): Promise<string> {
+    async execute(input: InitiateStoredFileProps): Promise<Array<string>> {
 
         await this.fileRepository.save(input);
 
-        const { uploadId } = await this.objectStorage.createMultipartUpload({
+        const { uploadId, key } = await this.objectStorage.createMultipartUpload({
             filename: input.filename,
             contentType: input.mimeType,
         })
 
-        return uploadId;
+        const CHUNKSIZE = 5 * 1024 * 1024
+        const totalParts = Math.ceil(input.size / CHUNKSIZE)
+        const partNumbers = Array.from({ length: totalParts }, (_, i) => i + 1)
+
+        const signedUrls = await Promise.all(
+            partNumbers.map((partNumber) => this.objectStorage.getPresignedUploadPartUrl({
+                partNumber,
+                uploadId,
+                key
+            }))
+        )
+
+        return signedUrls;
 
     }
 }
