@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { CompleteMultipartUploadInput, OBJECT_STORAGE } from "../../infrastructure/storage/object-storage.port";
 import { S3ObjectStorageAdapter } from "../../infrastructure/storage/s3-object-storage.adapter";
 import { SqlFileRepository } from "../../infrastructure/persistence/sql-file.repository";
-import { FILE_REPOSITORY } from "../../domain";
+import { FILE_REPOSITORY, FileStatus, StoredFile } from "../../domain";
 
 @Injectable()
 export class CompleteUploadUseCase {
@@ -13,8 +13,9 @@ export class CompleteUploadUseCase {
 
     async execute(input: CompleteMultipartUploadInput) {
 
-        //await this.fileRepository.update(file)
+
         await this.objectStorage.completeMultipartUpload(input)
+        await this.fileRepository.updateUploadStatus(FileStatus.COMPLETED, input.uploadId)
 
         return {
             message: "upload completed"

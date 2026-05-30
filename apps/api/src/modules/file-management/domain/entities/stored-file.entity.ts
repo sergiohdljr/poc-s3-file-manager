@@ -129,7 +129,7 @@ export class StoredFile extends BaseEntity {
     this.touch();
   }
 
-  complete(): void {
+  complete(uploadId: string): void {
     if (!canCompleteUpload(this._status)) {
       throw new InvalidFileStatusException(
         `Cannot complete upload from status "${this._status}"`,
@@ -138,7 +138,7 @@ export class StoredFile extends BaseEntity {
     }
 
     this._status = FileStatus.COMPLETED;
-    this._external_upload_id = null;
+    this._external_upload_id = uploadId
     this.touch();
   }
 

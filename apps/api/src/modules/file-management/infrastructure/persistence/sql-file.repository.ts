@@ -11,7 +11,7 @@ import { FileStatus } from '../../domain/enums/file-status.enum';
 export class SqlFileRepository implements FileRepository {
   constructor(@Inject(PG_POOL) private readonly pool: Pool) { }
 
-  async save(file: InitiateStoredFileProps): Promise<void> {
+  async save(file: StoredFile): Promise<void> {
 
     await this.pool.query(
       `INSERT INTO file_metadata (
@@ -28,7 +28,7 @@ export class SqlFileRepository implements FileRepository {
         FileStatus.PENDING,
         new Date(),
         new Date(),
-        file.external_upload_id
+        file.externalId
       ],
     );
   }
@@ -60,6 +60,21 @@ export class SqlFileRepository implements FileRepository {
         file.status,
         file.externalId,
         file.updatedAt,
+      ],
+    );
+
+  }
+
+  async updateUploadStatus(status: FileStatus, external_upload_id: string): Promise<void> {
+
+
+    await this.pool.query(
+      `UPDATE file_metadata SET
+         status = $2
+       WHERE external_upload_id = $1`,
+      [
+        external_upload_id,
+        status.toString()
       ],
     );
 
