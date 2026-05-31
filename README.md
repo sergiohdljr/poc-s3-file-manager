@@ -19,6 +19,7 @@ Proof of concept para gerenciamento de arquivos com armazenamento em S3.
 | ID     | Requisito          | Descrição                                                                                                                                                                                     |
 | ------ | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | RNF-01 | Uploads retomáveis | Os uploads devem ser retomáveis: em caso de interrupção (falha de rede, timeout, fechamento da sessão), o envio deve poder continuar de onde parou, sem reenviar o arquivo inteiro do início. |
+| RNF-02 | Os arquivos devem ser divididos e enviados para o serviço externo usando a técnica de multiupload |
 
 
 RF-01
