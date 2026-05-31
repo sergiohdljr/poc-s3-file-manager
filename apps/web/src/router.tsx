@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { UsersPage } from './modules/users/presentation/pages/UsersPage';
+import { FilesPage } from './modules/users/presentation/pages/Files';
 
 export const router = createBrowserRouter([
   { path: '/', element: <div>Home</div> },
-  { path: '/users', element: <UsersPage /> },
+  { path: '/files', element: <FilesPage /> },
 ]);

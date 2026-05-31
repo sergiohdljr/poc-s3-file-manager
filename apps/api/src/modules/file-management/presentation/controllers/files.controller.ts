@@ -1,15 +1,17 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post, Query } from '@nestjs/common';
 import { UploadFileUseCase } from '../../application/use-cases/upload-file.usecase';
 import { InitiateStoredFileProps } from '../../domain/entities/stored-file.entity';
 import { CompleteUploadUseCase } from '../../application/use-cases/complete-upload-file.usecase';
 import { CompleteMultipartUploadInput } from '../../infrastructure/storage/object-storage.port';
+import { ListFileUseCase } from '../../application/use-cases/list-files.usecase';
 
 
 @Controller('files')
 export class FilesController {
     constructor(
         private readonly uploadFileUseCase: UploadFileUseCase,
-        private readonly completeUploadUseCase: CompleteUploadUseCase
+        private readonly completeUploadUseCase: CompleteUploadUseCase,
+        private readonly listFilesUseCase: ListFileUseCase
     ) { }
 
     @Post('upload')
@@ -20,5 +22,10 @@ export class FilesController {
     @Post('upload/complete')
     async completeUploadFile(@Body() body: CompleteMultipartUploadInput) {
         return await this.completeUploadUseCase.execute(body)
+    }
+
+    @Get('list/:userId')
+    async listFiles(@Param('userId') userId: string) {
+        return await this.listFilesUseCase.execute(userId)
     }
 }

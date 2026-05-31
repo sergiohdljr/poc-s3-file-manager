@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
 
-export function UsersPage() {
+export function FilesPage() {
 
+  const [filesList, setFilesList] = useState<[]>()
   const [file, setFile] = useState<File | null>()
   const CHUNK_SIZE = 5 * 1024 * 1024
 
@@ -50,9 +51,16 @@ export function UsersPage() {
       parts
     })
 
+  }
 
+  const listFiles = async () => {
 
+    const userId = "a865afb2-9769-4c29-be08-75eb2ccda5ab"
 
+    const { data } = await axios.get(`http://localhost:3000/api/v1/files/list/${userId}`)
+
+    setFilesList(data)
+    console.log(filesList)
   }
 
   return (
@@ -61,7 +69,22 @@ export function UsersPage() {
       <input onChange={onChangeFile} type="file" />
       <br></br>
       <br></br>
-      <button onClick={submit} >fazer</button>
+      <button onClick={submit} >upload</button>
+      <button onClick={listFiles} >buscar arquivos</button>
+
+      <>
+        <ul>
+          {filesList && filesList?.map((file, i) => {
+            return (
+              <div style={{ display: 'flex' }} >
+                <li>{file._filename} - {file._size} - {file._type}  </li>
+                <button>download</button>
+              </div>
+            )
+          })}
+        </ul>
+
+      </>
 
     </main>
   );

@@ -4,6 +4,7 @@ import { FileStatus } from '../enums/file-status.enum';
 export const FILE_REPOSITORY = Symbol('FILE_REPOSITORY');
 
 export interface FileRepository {
+  list(userId: string): Promise<StoredFile[]>
   save(file: StoredFile): Promise<void>;
   findById(id: string): Promise<StoredFile | null>;
   update(file: StoredFile): Promise<void>;

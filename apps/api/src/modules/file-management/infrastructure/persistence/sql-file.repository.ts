@@ -11,6 +11,17 @@ import { FileStatus } from '../../domain/enums/file-status.enum';
 export class SqlFileRepository implements FileRepository {
   constructor(@Inject(PG_POOL) private readonly pool: Pool) { }
 
+  async list(userId: string): Promise<StoredFile[]> {
+
+    const { rows: files } = await this.pool.query(`SELECT
+         id, owner_id, folder_id, filename, mime_type, size,
+         status,external_upload_id, created_at, updated_at
+       FROM file_metadata
+       WHERE owner_id = CAST($1 AS uuid)`, [userId])
+
+    return files.map(FileMetadataMapper.toDomain)
+  }
+
   async save(file: StoredFile): Promise<void> {
 
     await this.pool.query(
