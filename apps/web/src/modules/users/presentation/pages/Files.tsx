@@ -6,6 +6,7 @@ export function FilesPage() {
   const [filesList, setFilesList] = useState<[]>()
   const [file, setFile] = useState<File | null>()
   const CHUNK_SIZE = 5 * 1024 * 1024
+  const userId = "a865afb2-9769-4c29-be08-75eb2ccda5ab"
 
   const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFile(e.target.files?.[0] ?? null);
@@ -55,12 +56,21 @@ export function FilesPage() {
 
   const listFiles = async () => {
 
-    const userId = "a865afb2-9769-4c29-be08-75eb2ccda5ab"
-
     const { data } = await axios.get(`http://localhost:3000/api/v1/files/list/${userId}`)
 
     setFilesList(data)
     console.log(filesList)
+  }
+
+  const download = async (fileId: string, fileName: string) => {
+    const { data } = await axios.get(`http://localhost:3000/api/v1/files/download/${userId}/${fileId}`)
+    const a = document.createElement("a");
+    a.href = data.downloadUrl;
+    a.target = "_blank";
+    a.rel = "noreferrer";
+    if (fileName) a.download = fileName;
+    a.click();
+    return
   }
 
   return (
@@ -78,7 +88,7 @@ export function FilesPage() {
             return (
               <div style={{ display: 'flex' }} >
                 <li>{file._filename} - {file._size} - {file._type}  </li>
-                <button>download</button>
+                <button onClick={() => download(file.id, file._name)} >download</button>
               </div>
             )
           })}

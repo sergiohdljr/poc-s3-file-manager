@@ -4,6 +4,7 @@ import { InitiateStoredFileProps } from '../../domain/entities/stored-file.entit
 import { CompleteUploadUseCase } from '../../application/use-cases/complete-upload-file.usecase';
 import { CompleteMultipartUploadInput } from '../../infrastructure/storage/object-storage.port';
 import { ListFileUseCase } from '../../application/use-cases/list-files.usecase';
+import { DownloadFileUseCase } from '../../application/use-cases/download-file.usecase';
 
 
 @Controller('files')
@@ -11,7 +12,8 @@ export class FilesController {
     constructor(
         private readonly uploadFileUseCase: UploadFileUseCase,
         private readonly completeUploadUseCase: CompleteUploadUseCase,
-        private readonly listFilesUseCase: ListFileUseCase
+        private readonly listFilesUseCase: ListFileUseCase,
+        private readonly downloadFileUseCase: DownloadFileUseCase
     ) { }
 
     @Post('upload')
@@ -27,5 +29,10 @@ export class FilesController {
     @Get('list/:userId')
     async listFiles(@Param('userId') userId: string) {
         return await this.listFilesUseCase.execute(userId)
+    }
+
+    @Get('download/:userId/:fileId')
+    async downloadFile(@Param('userId') userId: string, @Param('fileId') fileId: string) {
+        return await this.downloadFileUseCase.execute(userId, fileId)
     }
 }

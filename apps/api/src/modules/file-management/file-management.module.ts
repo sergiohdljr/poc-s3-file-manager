@@ -7,10 +7,12 @@ import { storageProviders } from './infrastructure/storage/storage.providers';
 import { UploadFileUseCase } from './application/use-cases/upload-file.usecase';
 import { CompleteUploadUseCase } from './application/use-cases/complete-upload-file.usecase';
 import { ListFileUseCase } from './application/use-cases/list-files.usecase';
+import { S3Key } from './domain';
+import { DownloadFileUseCase } from './application/use-cases/download-file.usecase';
 
 @Module({
   controllers: [FilesController],
-  providers: [...storageProviders, ...persistenceProviders, UploadFileUseCase, CompleteUploadUseCase, ListFileUseCase],
+  providers: [...storageProviders, ...persistenceProviders, UploadFileUseCase, CompleteUploadUseCase, ListFileUseCase, DownloadFileUseCase],
   exports: [OBJECT_STORAGE, FILE_REPOSITORY],
 })
 export class FileManagementModule { }
