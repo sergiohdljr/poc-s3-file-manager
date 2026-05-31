@@ -50,3 +50,35 @@ sequenceDiagram
   FS->>DB: Update status → uploaded save S3 URL
   FS-->>C: 200 OK — file URL
 ```
+
+RF-02
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant C as Client
+  participant FS as File Service
+  participant DB as Database
+  participant S3 as Amazon S3
+
+  C->>FS: GET /files/{file_id}/download
+  activate FS
+
+  FS->>DB: Get file metadata (file_id)
+  activate DB
+  DB-->>FS: Metadata (filename, etc.)
+  deactivate DB
+
+  FS->>S3: Solicita URL pré-assinada (s3_path)
+  activate S3
+  S3-->>FS: URL pré-assinada (expira em N min)
+  deactivate S3
+
+  FS-->>C: 302 Redirect → URL pré-assinada
+  deactivate FS
+
+  C->>S3: GET URL pré-assinada (download direto)
+  activate S3
+  S3-->>C: 200 OK — arquivo (ex: casamento.mp4 8GB)
+  deactivate S3
+```
